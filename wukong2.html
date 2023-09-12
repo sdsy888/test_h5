@@ -55,108 +55,109 @@
     </div>
 
     <script>
-        const gameContainer = document.getElementById('game-container');
-        const buddha = document.getElementById('buddha');
-        const scoreDisplay = document.getElementById('score');
-        let score = 0;
+    const gameContainer = document.getElementById('game-container');
+    const buddha = document.getElementById('buddha');
+    const scoreDisplay = document.getElementById('score');
+    let score = 0;
 
-        let sungokuSpeed = 5; // 孙悟空的移动速度，可以自行修改
+    let sungokuSpeed = 5; // 孙悟空的移动速度，可以自行修改
 
-        function getRandomYPosition() {
-            return Math.random() * (gameContainer.clientHeight - 50);
-        }
+    function getRandomYPosition() {
+        return Math.random() * (gameContainer.clientHeight - 50);
+    }
 
-        function updateScore() {
-            score++;
-            scoreDisplay.textContent = `Score: ${score}`;
-        }
+    function updateScore() {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+    }
 
-        function createSungoku() {
-            const sungoku = document.createElement('div');
-            sungoku.className = 'sungoku';
-            const y = getRandomYPosition();
-            sungoku.style.left = `${gameContainer.clientWidth}px`;
-            sungoku.style.top = `${y}px`;
-            gameContainer.appendChild(sungoku);
+    function createSungoku() {
+        const sungoku = document.createElement('div');
+        sungoku.className = 'sungoku';
+        const y = getRandomYPosition();
+        sungoku.style.left = `${gameContainer.clientWidth}px`;
+        sungoku.style.top = `${y}px`;
+        gameContainer.appendChild(sungoku);
 
-            let isDragging = false;
-            let initialX, initialY;
-            let offsetX, offsetY;
+        let isDragging = false;
+        let initialX, initialY;
+        let offsetX, offsetY;
 
-            sungoku.addEventListener('touchstart', (event) => {
-                isDragging = true;
-                initialX = event.touches[0].clientX - parseInt(sungoku.style.left);
-                initialY = event.touches[0].clientY - parseInt(sungoku.style.top);
+        sungoku.addEventListener('touchstart', (event) => {
+            isDragging = true;
+            initialX = event.touches[0].clientX - parseInt(sungoku.style.left);
+            initialY = event.touches[0].clientY - parseInt(sungoku.style.top);
+            offsetX = event.touches[0].clientX;
+            offsetY = event.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            if (isDragging) {
+                event.preventDefault(); // 防止页面滚动
+
+                const currentX = event.touches[0].clientX - initialX;
+                const currentY = event.touches[0].clientY - initialY;
+
+                sungoku.style.left = `${currentX}px`;
+                sungoku.style.top = `${currentY}px`;
+
                 offsetX = event.touches[0].clientX;
                 offsetY = event.touches[0].clientY;
-            });
-
-            document.addEventListener('touchmove', (event) => {
-                if (isDragging) {
-                    event.preventDefault(); // 防止页面滚动
-
-                    const currentX = event.touches[0].clientX - initialX;
-                    const currentY = event.touches[0].clientY - initialY;
-
-                    sungoku.style.left = `${currentX}px`;
-                    sungoku.style.top = `${currentY}px`;
-
-                    offsetX = event.touches[0].clientX;
-                    offsetY = event.touches[0].clientY;
-                }
-            });
-
-            document.addEventListener('touchend', () => {
-                isDragging = false;
-                const sungokuX = parseInt(sungoku.style.left);
-                const sungokuY = parseInt(sungoku.style.top);
-                const buddhaX = gameContainer.clientWidth / 2 - 25;
-                const buddhaY = 10;
-                const distance = Math.sqrt(Math.pow(sungokuX - buddhaX, 2) + Math.pow(sungokuY - buddhaY, 2));
-
-                if (distance < 50) {
-                    gameContainer.removeChild(sungoku);
-                    updateScore();
-                }
-            });
-
-            const moveInterval = setInterval(() => {
-                const sungokuX = parseInt(sungoku.style.left);
-                if (sungokuX > -50) {
-                    sungoku.style.left = `${sungokuX - sungokuSpeed}px`;
-                } else {
-                    clearInterval(moveInterval);
-                    gameContainer.removeChild(sungoku);
-                }
-            }, 50);
-        }
-
-        function startGame() {
-            let startTime = Date.now();
-            function spawnSungoku() {
-                if (Date.now() - startTime < 15000) {
-                    createSungoku();
-                    setTimeout(spawnSungoku, Math.random() * 2000);
-                } else {
-                    endGame();
-                }
             }
-            spawnSungoku();
-        }
+        });
 
-        function endGame() {
-            gameContainer.innerHTML = ''; // 清空游戏区域
-            alert(`游戏结束！你的得分是: ${score}`);
-            resetGame();
-        }
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            const sungokuX = parseInt(sungoku.style.left);
+            const sungokuY = parseInt(sungoku.style.top);
+            const buddhaX = gameContainer.clientWidth / 2 - 25;
+            const buddhaY = 10;
+            const distance = Math.sqrt(Math.pow(sungokuX - buddhaX, 2) + Math.pow(sungokuY - buddhaY, 2));
 
-        function resetGame() {
-            score = 0;
-            scoreDisplay.textContent = 'Score: 0';
-            startGame();
-        }
+            if (distance < 50) {
+                gameContainer.removeChild(sungoku);
+                updateScore();
+            }
+        });
 
+        const moveInterval = setInterval(() => {
+            const sungokuX = parseInt(sungoku.style.left);
+            if (sungokuX > -50) {
+                sungoku.style.left = `${sungokuX - sungokuSpeed}px`;
+            } else {
+                clearInterval(moveInterval);
+                gameContainer.removeChild(sungoku);
+            }
+        }, 50);
+    }
+
+    function startGame() {
+        let startTime = Date.now();
+        function spawnSungoku() {
+            if (Date.now() - startTime < 15000) {
+                createSungoku();
+                setTimeout(spawnSungoku, Math.random() * 2000);
+            } else {
+                endGame();
+            }
+        }
+        spawnSungoku();
+    }
+
+    function endGame() {
+        gameContainer.innerHTML = ''; // 清空游戏区域
+        alert(`游戏结束！你的得分是: ${score}`);
+        resetGame();
+    }
+
+    function resetGame() {
+        score = 0;
+        scoreDisplay.textContent = 'Score: 0';
         startGame();
-    </script>
+    }
+
+    startGame();
+</script>
+
 </body>
 </html>
