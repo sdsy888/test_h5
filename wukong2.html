@@ -92,8 +92,10 @@
         document.addEventListener('mousemove', (event) => {
             if (!isDragging) return;
             event.preventDefault();
-            const x = event.clientX - offsetX;
+            let x = event.clientX - offsetX;
             const y = event.clientY - offsetY;
+            x = Math.min(x, gameContainer.clientWidth - sungoku.clientWidth); // 限制横向拖动范围
+            x = Math.max(x, 0); // 限制横向拖动范围
             sungoku.style.left = `${x}px`;
             sungoku.style.top = `${y}px`;
         });
