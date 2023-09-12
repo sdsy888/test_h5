@@ -16,7 +16,7 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            overflow: hidden; /* 隐藏游戏容器的滚动条 */
+            overflow: hidden;
         }
 
         #buddha {
@@ -70,10 +70,6 @@
             scoreDisplay.textContent = `Score: ${score}`;
         }
 
-        function preventDefaultTouchScroll(event) {
-            event.preventDefault();
-        }
-
         function createSungoku() {
             const sungoku = document.createElement('div');
             sungoku.className = 'sungoku';
@@ -85,24 +81,22 @@
             let isDragging = false;
             let initialX, initialY;
 
-            sungoku.addEventListener('touchstart', (event) => {
+            sungoku.addEventListener('mousedown', (event) => {
                 isDragging = true;
-                const touch = event.touches[0];
-                initialX = touch.clientX - parseInt(sungoku.style.left);
-                initialY = touch.clientY - parseInt(sungoku.style.top);
+                initialX = event.clientX - parseInt(sungoku.style.left);
+                initialY = event.clientY - parseInt(sungoku.style.top);
             });
 
-            document.addEventListener('touchmove', (event) => {
+            document.addEventListener('mousemove', (event) => {
                 if (isDragging) {
-                    const touch = event.touches[0];
-                    const x = touch.clientX - initialX;
-                    const y = touch.clientY - initialY;
+                    const x = event.clientX - initialX;
+                    const y = event.clientY - initialY;
                     sungoku.style.left = `${x}px`;
                     sungoku.style.top = `${y}px`;
                 }
             });
 
-            document.addEventListener('touchend', () => {
+            document.addEventListener('mouseup', () => {
                 isDragging = false;
                 const sungokuX = parseInt(sungoku.style.left);
                 const sungokuY = parseInt(sungoku.style.top);
@@ -153,9 +147,6 @@
         }
 
         startGame();
-
-        // 防止触摸滚动整个页面
-        gameContainer.addEventListener('touchmove', preventDefaultTouchScroll);
     </script>
 </body>
 </html>
