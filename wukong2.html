@@ -16,6 +16,7 @@
             position: relative;
             width: 100%;
             height: 100vh;
+            overflow: hidden; /* 隐藏游戏容器的滚动条 */
         }
 
         #buddha {
@@ -67,6 +68,10 @@
         function updateScore() {
             score++;
             scoreDisplay.textContent = `Score: ${score}`;
+        }
+
+        function preventDefaultTouchScroll(event) {
+            event.preventDefault();
         }
 
         function createSungoku() {
@@ -148,6 +153,9 @@
         }
 
         startGame();
+
+        // 防止触摸滚动整个页面
+        gameContainer.addEventListener('touchmove', preventDefaultTouchScroll);
     </script>
 </body>
 </html>
