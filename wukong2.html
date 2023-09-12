@@ -80,22 +80,24 @@
             let isDragging = false;
             let initialX, initialY;
 
-            sungoku.addEventListener('mousedown', (event) => {
+            sungoku.addEventListener('touchstart', (event) => {
                 isDragging = true;
-                initialX = event.clientX - parseInt(sungoku.style.left);
-                initialY = event.clientY - parseInt(sungoku.style.top);
+                const touch = event.touches[0];
+                initialX = touch.clientX - parseInt(sungoku.style.left);
+                initialY = touch.clientY - parseInt(sungoku.style.top);
             });
 
-            document.addEventListener('mousemove', (event) => {
+            document.addEventListener('touchmove', (event) => {
                 if (isDragging) {
-                    const x = event.clientX - initialX;
-                    const y = event.clientY - initialY;
+                    const touch = event.touches[0];
+                    const x = touch.clientX - initialX;
+                    const y = touch.clientY - initialY;
                     sungoku.style.left = `${x}px`;
                     sungoku.style.top = `${y}px`;
                 }
             });
 
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('touchend', () => {
                 isDragging = false;
                 const sungokuX = parseInt(sungoku.style.left);
                 const sungokuY = parseInt(sungoku.style.top);
