@@ -115,6 +115,39 @@
             }
         });
 
+        sungoku.addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            isDragging = true;
+            offsetX = event.touches[0].clientX - sungoku.getBoundingClientRect().left;
+            offsetY = event.touches[0].clientY - sungoku.getBoundingClientRect().top;
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            if (!isDragging) return;
+            event.preventDefault();
+            let x = event.touches[0].clientX - offsetX;
+            const y = event.touches[0].clientY - offsetY;
+            x = Math.min(x, gameContainer.clientWidth - sungoku.clientWidth); // 限制横向拖动范围
+            x = Math.max(x, 0); // 限制横向拖动范围
+            sungoku.style.left = `${x}px`;
+            sungoku.style.top = `${y}px`;
+        });
+
+        document.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const sungokuX = parseInt(sungoku.style.left);
+            const sungokuY = parseInt(sungoku.style.top);
+            const buddhaX = gameContainer.clientWidth / 2 - 25;
+            const buddhaY = 10;
+            const distance = Math.sqrt(Math.pow(sungokuX - buddhaX, 2) + Math.pow(sungokuY - buddhaY, 2));
+
+            if (distance < 50) {
+                gameContainer.removeChild(sungoku);
+                updateScore();
+            }
+        });
+
         const moveInterval = setInterval(() => {
             if (!isDragging) {
                 const sungokuX = parseInt(sungoku.style.left);
