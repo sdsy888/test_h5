@@ -84,6 +84,7 @@
         let offsetX, offsetY;
 
         function startDragging(event) {
+            event.preventDefault(); // 防止默认拖动行为
             isDragging = true;
             initialX = event.clientX - parseInt(sungoku.style.left);
             initialY = event.clientY - parseInt(sungoku.style.top);
@@ -126,24 +127,6 @@
         document.addEventListener('mousemove', moveSungoku);
         document.addEventListener('mouseup', stopDragging);
 
-        sungoku.addEventListener('touchstart', (event) => {
-            if (event.touches.length === 1) {
-                startDragging(event.touches[0]);
-            }
-        });
-
-        document.addEventListener('touchmove', (event) => {
-            if (isDragging && event.touches.length === 1) {
-                moveSungoku(event.touches[0]);
-            }
-        });
-
-        document.addEventListener('touchend', (event) => {
-            if (isDragging) {
-                stopDragging();
-            }
-        });
-
         const moveInterval = setInterval(() => {
             const sungokuX = parseInt(sungoku.style.left);
             if (sungokuX > -50) {
@@ -182,6 +165,7 @@
 
     startGame();
 </script>
+
 
 
 </body>
