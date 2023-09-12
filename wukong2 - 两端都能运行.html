@@ -56,6 +56,7 @@
 
     <script>
     const gameContainer = document.getElementById('game-container');
+    const buddha = document.getElementById('buddha');
     const scoreDisplay = document.getElementById('score');
     let score = 0;
 
@@ -160,19 +161,7 @@
         }, 50);
     }
 
-    function createBuddha() {
-        const buddha = document.createElement('div');
-        buddha.id = 'buddha';
-        buddha.className = 'buddha';
-        buddha.style.left = `${gameContainer.clientWidth / 2 - 25}px`;
-        buddha.style.top = '10px';
-        gameContainer.appendChild(buddha);
-    }
-
     function startGame() {
-        createBuddha();
-        score = 0;
-        scoreDisplay.textContent = 'Score: 0';
         let startTime = Date.now();
         function spawnSungoku() {
             if (Date.now() - startTime < 15000) {
@@ -192,7 +181,8 @@
     }
 
     function resetGame() {
-        createBuddha(); // 重新生成如来佛代表的红色圆球
+        score = 0;
+        scoreDisplay.textContent = 'Score: 0';
         startGame();
     }
 
