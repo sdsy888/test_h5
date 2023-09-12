@@ -80,39 +80,28 @@
         gameContainer.appendChild(sungoku);
 
         let isDragging = false;
-        let initialX, initialY;
         let offsetX, offsetY;
+        let sungokuX, sungokuY;
 
-        function startDragging(event) {
-            event.preventDefault(); // 防止默认拖动行为
+        sungoku.addEventListener('mousedown', (event) => {
+            event.preventDefault();
             isDragging = true;
-            initialX = event.clientX - parseInt(sungoku.style.left);
-            initialY = event.clientY - parseInt(sungoku.style.top);
-            offsetX = event.clientX;
-            offsetY = event.clientY;
-        }
+            offsetX = event.clientX - sungoku.getBoundingClientRect().left;
+            offsetY = event.clientY - sungoku.getBoundingClientRect().top;
+        });
 
-        function moveSungoku(event) {
-            if (isDragging) {
-                event.preventDefault(); // 防止默认拖动行为
+        document.addEventListener('mousemove', (event) => {
+            if (!isDragging) return;
+            event.preventDefault();
+            sungokuX = event.clientX - offsetX;
+            sungokuY = event.clientY - offsetY;
+            sungoku.style.left = `${sungokuX}px`;
+            sungoku.style.top = `${sungokuY}px`;
+        });
 
-                const currentX = event.clientX;
-                const currentY = event.clientY;
-
-                const x = currentX - initialX;
-                const y = currentY - initialY;
-                sungoku.style.left = `${x}px`;
-                sungoku.style.top = `${y}px`;
-
-                offsetX = currentX;
-                offsetY = currentY;
-            }
-        }
-
-        function stopDragging() {
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
             isDragging = false;
-            const sungokuX = parseInt(sungoku.style.left);
-            const sungokuY = parseInt(sungoku.style.top);
             const buddhaX = gameContainer.clientWidth / 2 - 25;
             const buddhaY = 10;
             const distance = Math.sqrt(Math.pow(sungokuX - buddhaX, 2) + Math.pow(sungokuY - buddhaY, 2));
@@ -121,19 +110,17 @@
                 gameContainer.removeChild(sungoku);
                 updateScore();
             }
-        }
-
-        sungoku.addEventListener('mousedown', startDragging);
-        document.addEventListener('mousemove', moveSungoku);
-        document.addEventListener('mouseup', stopDragging);
+        });
 
         const moveInterval = setInterval(() => {
-            const sungokuX = parseInt(sungoku.style.left);
-            if (sungokuX > -50) {
-                sungoku.style.left = `${sungokuX - sungokuSpeed}px`;
-            } else {
-                clearInterval(moveInterval);
-                gameContainer.removeChild(sungoku);
+            if (!isDragging) {
+                sungokuX = parseInt(sungoku.style.left);
+                if (sungokuX > -50) {
+                    sungoku.style.left = `${sungokuX - sungokuSpeed}px`;
+                } else {
+                    clearInterval(moveInterval);
+                    gameContainer.removeChild(sungoku);
+                }
             }
         }, 50);
     }
