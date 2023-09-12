@@ -83,30 +83,32 @@
         let initialX, initialY;
         let offsetX, offsetY;
 
-        sungoku.addEventListener('touchstart', (event) => {
+        function startDragging(event) {
             isDragging = true;
-            initialX = event.touches[0].clientX - parseInt(sungoku.style.left);
-            initialY = event.touches[0].clientY - parseInt(sungoku.style.top);
-            offsetX = event.touches[0].clientX;
-            offsetY = event.touches[0].clientY;
-        });
+            initialX = event.clientX || event.touches[0].clientX - parseInt(sungoku.style.left);
+            initialY = event.clientY || event.touches[0].clientY - parseInt(sungoku.style.top);
+            offsetX = event.clientX || event.touches[0].clientX;
+            offsetY = event.clientY || event.touches[0].clientY;
+        }
 
-        document.addEventListener('touchmove', (event) => {
+        function moveSungoku(event) {
             if (isDragging) {
                 event.preventDefault(); // 防止页面滚动
 
-                const currentX = event.touches[0].clientX - initialX;
-                const currentY = event.touches[0].clientY - initialY;
+                const currentX = event.clientX || event.touches[0].clientX;
+                const currentY = event.clientY || event.touches[0].clientY;
 
-                sungoku.style.left = `${currentX}px`;
-                sungoku.style.top = `${currentY}px`;
+                const x = currentX - initialX;
+                const y = currentY - initialY;
+                sungoku.style.left = `${x}px`;
+                sungoku.style.top = `${y}px`;
 
-                offsetX = event.touches[0].clientX;
-                offsetY = event.touches[0].clientY;
+                offsetX = currentX;
+                offsetY = currentY;
             }
-        });
+        }
 
-        document.addEventListener('touchend', () => {
+        function stopDragging() {
             isDragging = false;
             const sungokuX = parseInt(sungoku.style.left);
             const sungokuY = parseInt(sungoku.style.top);
@@ -118,7 +120,16 @@
                 gameContainer.removeChild(sungoku);
                 updateScore();
             }
-        });
+        }
+
+        sungoku.addEventListener('mousedown', startDragging);
+        sungoku.addEventListener('touchstart', startDragging);
+
+        document.addEventListener('mousemove', moveSungoku);
+        document.addEventListener('touchmove', moveSungoku);
+
+        document.addEventListener('mouseup', stopDragging);
+        document.addEventListener('touchend', stopDragging);
 
         const moveInterval = setInterval(() => {
             const sungokuX = parseInt(sungoku.style.left);
@@ -158,6 +169,7 @@
 
     startGame();
 </script>
+
 
 </body>
 </html>
