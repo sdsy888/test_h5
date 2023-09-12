@@ -80,30 +80,22 @@
 
             let isDragging = false;
             let initialX, initialY;
-            let previousX, previousY;
+            let offsetX, offsetY;
 
             sungoku.addEventListener('mousedown', (event) => {
                 isDragging = true;
-                initialX = event.clientX - parseInt(sungoku.style.left);
-                initialY = event.clientY - parseInt(sungoku.style.top);
-                previousX = event.clientX;
-                previousY = event.clientY;
+                offsetX = event.clientX - sungoku.getBoundingClientRect().left;
+                offsetY = event.clientY - sungoku.getBoundingClientRect().top;
             });
 
             document.addEventListener('mousemove', (event) => {
                 if (isDragging) {
-                    const currentX = event.clientX;
-                    const currentY = event.clientY;
-                    const deltaX = currentX - previousX;
-                    const deltaY = currentY - previousY;
+                    event.preventDefault(); // 防止页面滚动
 
-                    const x = currentX - initialX;
-                    const y = currentY - initialY;
+                    const x = event.clientX - offsetX;
+                    const y = event.clientY - offsetY;
                     sungoku.style.left = `${x}px`;
                     sungoku.style.top = `${y}px`;
-
-                    previousX = currentX;
-                    previousY = currentY;
                 }
             });
 
