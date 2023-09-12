@@ -61,8 +61,6 @@
 
     let sungokuSpeed = 5; // 孙悟空的移动速度，可以自行修改
 
-    let buddha = null; // 存储如来佛代表的红色圆球
-
     function getRandomYPosition() {
         return Math.random() * (gameContainer.clientHeight - 50);
     }
@@ -163,7 +161,7 @@
     }
 
     function createBuddha() {
-        buddha = document.createElement('div');
+        const buddha = document.createElement('div');
         buddha.id = 'buddha';
         buddha.className = 'buddha';
         buddha.style.left = `${gameContainer.clientWidth / 2 - 25}px`;
@@ -189,12 +187,12 @@
 
     function endGame() {
         gameContainer.innerHTML = ''; // 清空游戏区域
+        createBuddha(); // 重新生成如来佛代表的红色圆球
         alert(`游戏结束！你的得分是: ${score}`);
         resetGame();
     }
 
     function resetGame() {
-        createBuddha(); // 重新生成如来佛代表的红色圆球
         startGame();
     }
 
