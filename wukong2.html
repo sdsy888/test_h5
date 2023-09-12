@@ -17,6 +17,7 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
+            touch-action: none; /* 禁用默认触摸行为 */
         }
 
         #buddha {
@@ -81,22 +82,23 @@
             let isDragging = false;
             let initialX, initialY;
 
-            sungoku.addEventListener('mousedown', (event) => {
+            sungoku.addEventListener('touchstart', (event) => {
                 isDragging = true;
-                initialX = event.clientX - parseInt(sungoku.style.left);
-                initialY = event.clientY - parseInt(sungoku.style.top);
+                initialX = event.touches[0].clientX - parseInt(sungoku.style.left);
+                initialY = event.touches[0].clientY - parseInt(sungoku.style.top);
             });
 
-            document.addEventListener('mousemove', (event) => {
+            document.addEventListener('touchmove', (event) => {
                 if (isDragging) {
-                    const x = event.clientX - initialX;
-                    const y = event.clientY - initialY;
+                    event.preventDefault(); // 防止页面滚动
+                    const x = event.touches[0].clientX - initialX;
+                    const y = event.touches[0].clientY - initialY;
                     sungoku.style.left = `${x}px`;
                     sungoku.style.top = `${y}px`;
                 }
             });
 
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('touchend', () => {
                 isDragging = false;
                 const sungokuX = parseInt(sungoku.style.left);
                 const sungokuY = parseInt(sungoku.style.top);
