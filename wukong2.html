@@ -37,6 +37,7 @@
             background-color: #ff9900;
             border-radius: 50%;
             cursor: pointer;
+            touch-action: none; /* 禁用默认触摸行为 */
         }
 
         #score {
@@ -82,24 +83,30 @@
             let initialX, initialY;
             let offsetX, offsetY;
 
-            sungoku.addEventListener('mousedown', (event) => {
+            sungoku.addEventListener('touchstart', (event) => {
                 isDragging = true;
-                offsetX = event.clientX - sungoku.getBoundingClientRect().left;
-                offsetY = event.clientY - sungoku.getBoundingClientRect().top;
+                initialX = event.touches[0].clientX - parseInt(sungoku.style.left);
+                initialY = event.touches[0].clientY - parseInt(sungoku.style.top);
+                offsetX = event.touches[0].clientX;
+                offsetY = event.touches[0].clientY;
             });
 
-            document.addEventListener('mousemove', (event) => {
+            document.addEventListener('touchmove', (event) => {
                 if (isDragging) {
                     event.preventDefault(); // 防止页面滚动
 
-                    const x = event.clientX - offsetX;
-                    const y = event.clientY - offsetY;
-                    sungoku.style.left = `${x}px`;
-                    sungoku.style.top = `${y}px`;
+                    const currentX = event.touches[0].clientX - initialX;
+                    const currentY = event.touches[0].clientY - initialY;
+
+                    sungoku.style.left = `${currentX}px`;
+                    sungoku.style.top = `${currentY}px`;
+
+                    offsetX = event.touches[0].clientX;
+                    offsetY = event.touches[0].clientY;
                 }
             });
 
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('touchend', () => {
                 isDragging = false;
                 const sungokuX = parseInt(sungoku.style.left);
                 const sungokuY = parseInt(sungoku.style.top);
