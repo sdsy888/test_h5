@@ -17,6 +17,7 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
+            touch-action: none; /* 禁用默认触摸行为 */
         }
 
         #buddha {
@@ -110,6 +111,45 @@
             });
 
             document.addEventListener('touchend', () => {
+                isDragging = false;
+                const sungokuX = parseInt(sungoku.style.left);
+                const sungokuY = parseInt(sungoku.style.top);
+                const buddhaX = gameContainer.clientWidth / 2 - 25;
+                const buddhaY = 10;
+                const distance = Math.sqrt(Math.pow(sungokuX - buddhaX, 2) + Math.pow(sungokuY - buddhaY, 2));
+
+                if (distance < 50) {
+                    gameContainer.removeChild(sungoku);
+                    updateScore();
+                }
+            });
+
+            sungoku.addEventListener('mousedown', (event) => {
+                isDragging = true;
+                initialX = event.clientX - parseInt(sungoku.style.left);
+                initialY = event.clientY - parseInt(sungoku.style.top);
+                previousX = event.clientX;
+                previousY = event.clientY;
+            });
+
+            document.addEventListener('mousemove', (event) => {
+                if (isDragging) {
+                    const currentX = event.clientX;
+                    const currentY = event.clientY;
+                    const deltaX = currentX - previousX;
+                    const deltaY = currentY - previousY;
+
+                    const x = currentX - initialX;
+                    const y = currentY - initialY;
+                    sungoku.style.left = `${x}px`;
+                    sungoku.style.top = `${y}px`;
+
+                    previousX = currentX;
+                    previousY = currentY;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
                 isDragging = false;
                 const sungokuX = parseInt(sungoku.style.left);
                 const sungokuY = parseInt(sungoku.style.top);
