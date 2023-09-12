@@ -58,6 +58,7 @@
     const gameContainer = document.getElementById('game-container');
     const scoreDisplay = document.getElementById('score');
     let score = 0;
+    let buddhaCreated = false; // 用于跟踪如来佛代表的红球是否已经创建
 
     let sungokuSpeed = 5; // 孙悟空的移动速度，可以自行修改
 
@@ -161,12 +162,15 @@
     }
 
     function createBuddha() {
-        const buddha = document.createElement('div');
-        buddha.id = 'buddha';
-        buddha.className = 'buddha';
-        buddha.style.left = `${gameContainer.clientWidth / 2 - 25}px`;
-        buddha.style.top = '10px';
-        gameContainer.appendChild(buddha);
+        const buddha = document.getElementById('buddha');
+        if (!buddha) {
+            const newBuddha = document.createElement('div');
+            newBuddha.id = 'buddha';
+            newBuddha.className = 'buddha';
+            newBuddha.style.left = `${gameContainer.clientWidth / 2 - 25}px`;
+            newBuddha.style.top = '10px';
+            gameContainer.appendChild(newBuddha);
+        }
     }
 
     function startGame() {
@@ -185,20 +189,7 @@
         spawnSungoku();
     }
 
-    function endGame() {
-        gameContainer.innerHTML = ''; // 清空游戏区域
-        createBuddha(); // 重新生成如来佛代表的红色圆球
-        alert(`游戏结束！你的得分是: ${score}`);
-        resetGame();
-    }
-
-    function resetGame() {
-        startGame();
-    }
-
-    startGame();
-</script>
-
+   
 
 
 </body>
